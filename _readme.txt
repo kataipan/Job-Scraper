@@ -1,50 +1,52 @@
-JobScraper - python script set that crawls job listing from a list of URLs 
-and saves the resuls to an .html file. 
-Currently works for linkedin and German indeed.
+JobScraper - A set of python scripts that crawls job listing from a list of URLs 
+and saves the resuls to a .html file for more convenient browsing. 
+A naive web scraper custom built for my personal job hunt,
+currently set to work on LinkedIn, Jobvector.de and the German indeed.com site.
 
 HOW TO USE:---------------------------------------------------------------------
 
     Step 0) Preparation:
 
         To run JobScraper you need to have a version of Python 3 installed on 
-	your system, as well als the following additonal modules:
+	your system, as well als the following additonal libraries:
 	
 		beautifulsoup4
 		requests
 
-	You can install modules by searching for cmd under windows and 
-	entering something like the following in the command line:
+    Step 1) Adjust search parameters:
 
-		python -m pip install beautifulsoup4
-
-    Step 1) Create list of job query URLs:
-
-	Open "make_URLList.py" in a texteditor of your choice or python's IDLE.
-	For each query you usually do on a given job platform, e.g. indeed.com,
-	enter the keywords, city and distance and run the script "make_URLList.py".
-	This will create the shelve files for "URLs" that will be needed later.
-	Note that the city for now can only be single word, unless you modify
-	the entries for yourself.
-
-    Step 2) Run "ScrapeJobs.py"
-
-	The script should now iterate through all your URLs and the contained 
-	Jobs and write them into a new .html file in the Folder 
-	'.\JobScraper\Results\'. You can open this file in your browser of choice.
+	The main script is ScrapeJobs_fast.py.
 	
-	The links displayed on the page contain the job description as mouseover 
-	text.
+	For a search to work, you need to enter keywords for the search (e.g.
+	"Data Scientist"), Cities to search and the search radius and the
+	platform you want to search. The script will create a list of URLs out
+	of these elements and request the html from the respective platforms.
+	
+	The script first gets all results from these URLs and then removes
+	double entries (you might get the same job ad dozens of times!).
+	
+	Additionally, you can also enter a list of exclusion words. Any jobs that
+	contain these terms will be deleted from the list as well.
+	
+	You have the option to pick between a fast variant, that just performs 
+	one request per URL, and a slower one, that requests the indivudal job listings
+	for a detailed description as mouseover text in the results page. This
+	second round of requests is done after doubles and exclusion words are removed,
+	but it is still a lot slower!
+	
+	Lastly, if you have previously performed job searches, the data of these
+	scraping attempts will be saved in the Results folder. You can compare your
+	current results with previous ones and either a) keep them in the list,
+	where they will be marked blue, while nwe jobs are green or b) remove
+	them from the result list.
 
-
-Options:-------------------------------------------------------------------------
+Options in detail:-------------------------------------------------------------------------
 
 You can adjust a few things in ScrapeJobs.py:
 
 Sort by city:
 	If you want to sort the resulting job list alphabetically by city 
 	(or rather location), set the constant "sort_by_city" to "True"
-	
-	Sorting by company is not yet implemented.	
 
 Exclusion keywords:
 	If you wish to change the list of no-no words, which remove job 
