@@ -16,16 +16,29 @@ def ScrapeJobs():
     # set up constants
     # change entries accordingly ###################################################
 
-    keywords = ['EEG', 'imaging', 'biology', 'biologist', 'life science',
-                'naturwissenschaften', 'medical writer', 'scientific',
-                'naturwissenschaftler', 'natural science', 'Matlab',
-                'brain', 'data science', 'digital health', 'neuroscience',
-                'neurowissenschaft', 'biomarker', 'medizintechnik',
-                'digital signal processing', 'neuro', 'brain', 'brain-computer',
-                'brain-machine']
+    keywords = ['Gehirn', 'neuro', 'electroencepahlogram', 'imaging',
+                'biology', 'biologist', 'life science',
+                'naturwissenschaften', 'bioinformatic',
+                'naturwissenschaftler', 'Matlab', 'cognitive', 'affective',
+                'behaviour',
+                'brain', 'data science', 'neuroscience',
+                'neurowissenschaft', 'biomarker', 'jupyter', 'python',
+                'pandas', 'numpy', 'scientific programmer',
+                'digital signal processing', 'neuro', 'brain',
+                'brain-computer', 'brain-machine']
+
+                # 'natural science'
 
     # [city, search radius]
-    Cities = [['Freiburg im Breisgau',  50],
+    Cities = [
+              ['Amsterdam',             20],
+              ['Copenhagen',            20],
+##              ['Stockholm',             20],
+##              ['Lissabon',              20],
+              ['Nürnberg',              20],
+              ['Würzburg',              20],
+              ['Leipzig',               10],
+              ['Freiburg im Breisgau',  50],
               ['Basel',                 10],
               ['Karlsruhe',             10],
               ['Heidelberg',            20],
@@ -34,11 +47,15 @@ def ScrapeJobs():
               ['Zürich',                20],
               ['Tübingen',              20],
 ##              ['Göttingen',             20],
-##              ['Stuttgart',             20],
-##              ['Köln',                  20],
-##              ['Nünberg',               20],
-##              ['Offenburg',             20],
-##              ['Berlin',                20]
+              ['Stuttgart',             20],
+             ['Köln',                  20],
+              ['Berlin',                20],
+              ['Wien',                  20],
+              ['Lausanne',              10],
+              ['Bern',                  20],
+              ['Strasbourg',            20],
+              ['Mannheim',              10],
+              ['Frankfurt',             20]
                 ]
     
     Sites = ['indeed', 'jobvector', 'linkedin'] # 'jobvector', 'linkedin', 'indeed']     # 'jobvector', 'linkedin', 'indeed'
@@ -86,7 +103,7 @@ def ScrapeJobs():
     split_by_keyword = True
 
     # scrape detailed job descriptions?
-    scrape_job_details = True # SLOW!
+    scrape_job_details = False # SLOW!
 
     # remove previously found jobs from listing?
     remove_old_jobs = False
