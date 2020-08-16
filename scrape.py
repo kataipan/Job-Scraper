@@ -115,10 +115,11 @@ def grab_indeed(URL, Jobs):
 def get_details(Jobs):
 
     print('scraping job details')
+    print('this might take a while...')
 
     for job in range(len(Jobs)):
-        if Jobs[job].keys():
-            print('job# ' + str(job))
+        if Jobs[job].keys() and Jobs[job]['PreviouslyScraped']==False: # ónly get details for new jobs for speed
+            # print('job# ' + str(job))
             Link = Jobs[job]['Link']
             if 'indeed' in Link:
                 page = requests.get(Link)
