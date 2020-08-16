@@ -73,7 +73,7 @@ def grab_jobvector(URL, Jobs):
         JobTitle, OrgName, City, Text = parse.unpack_jobInfo(JobTitle, OrgName, City, Text)
 
         Jobs.append({'JobTitle': JobTitle.strip(), 'OrgName': OrgName.strip(), 'City': City.strip(),\
-            'Link': ('https://www.jobvector.de' + str(JobLink.get('href'))), 'Text': Text, 'PreviouslyScraped': False}, 'ScrapeDate': ScrapeDate})
+            'Link': ('https://www.jobvector.de' + str(JobLink.get('href'))), 'Text': Text, 'PreviouslyScraped': False, 'ScrapeDate': ScrapeDate})
 
         JobCount += 1
     return(Jobs)
@@ -111,7 +111,7 @@ def grab_indeed(URL, Jobs):
 
         Jobs.append({'JobTitle': JobTitle, 'OrgName': OrgName, 'City': City,\
             'Link': ('https://indeed.com' + str(JobLink.get('href'))), 'Text': Text, 'PreviouslyScraped': False, \
-                     'ScrapeDate': ScrapeDate}})
+                     'ScrapeDate': ScrapeDate})
 
         JobCount += 1
 
@@ -333,13 +333,17 @@ def compare2oldJobs(Jobs, timeThreshold):
                     Jobs[j]['OrgName'] == oldJob['OrgName']:
 
                     if 'ScrapeDate' in oldJob:
+                        #print('field scrapeDate exists')
+                        #print(oldJob['ScrapeDate'])
                         # check date threshold
                         PrevScrapeDate = oldJob['ScrapeDate']
                         Delta = dt.date.today() - PrevScrapeDate 
 
-                        if  Delta <= timeThreshold:
+                        if  Delta.days <= timeThreshold:
+                            #print('threshold not crossed')
                             Jobs[j].update({'PreviouslyScraped': True})
                         else:
+                            #print('threshold crossed')
                             Jobs[j].update({'PreviouslyScraped': False}) # treated as new although in list
                     else:
                         Jobs[j].update({'PreviouslyScraped': True})
@@ -433,6 +437,12 @@ def save_html(Jobs, date_time, OldJobFilename, NoNoWords, URLList):
             
                 Keywords = ', '.join(i for i in k)
 
+                # difference today - scrape date
+                ScrapeDate = Jobs[job]['ScrapeDate']
+                TimeDiff = dt.date.today() - ScrapeDate
+                TimeDiffDays = TimeDiff.days
+                print(TimeDiffDays)
+
                 # change color to indicate new and old jobs
                 if Jobs[job]['PreviouslyScraped'] == True:
                     divClass = 'myDiv1'
@@ -443,6 +453,8 @@ def save_html(Jobs, date_time, OldJobFilename, NoNoWords, URLList):
                                    '" title="' + Jobs[job]['Text'] + \
                                    '"><strong>' + Title + '<strong></a><br>' + Company + \
                                    '<br>' + City + '<br><br><span style="color: darkgray">' \
+                                   + str(TimeDiffDays) + ' days ago</span>' \
+                                    '<br><br><span style="color: darkgray">' \
                                                    + Keywords + '</span></div>'
     
                 DisplayJobFile.write(HTML_element)
@@ -539,12 +551,14 @@ def split_by_keyword(Jobs, date_time, keywords):
                     else:
                         divClass = 'myDiv2'
 
-                    HTML_element = '<div class="' + divClass + '"><a href="' + Jobs[job]['Link'] + \
-                                       '" title="' + Jobs[job]['Text'] + \
-                                       '"><strong>' + Title + '<strong></a><br>' + Company + \
-                                       '<br>' + City + '<br><br><span style="color: darkgray">' \
-                                                       + Keywords + '</span></div>'
-        
+                     HTML_element = '<div class="' + divClass + '"><a href="' + Jobs[job]['Link'] + \
+                                   '" title="' + Jobs[job]['Text'] + \
+                                   '"><strong>' + Title + '<strong></a><br>' + Company + \
+                                   '<br>' + City + '<br><br><span style="color: darkgray">' \
+                                   + str(TimeDiffDays) + ' days ago</span>' \
+                                    '<br><br><span style="color: darkgray">' \
+                                                   + Keywords + '</span></div>'
+    
                     DisplayJobFile.write(HTML_element)
                 except UnicodeEncodeError:
                     continue
