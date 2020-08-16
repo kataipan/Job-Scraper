@@ -5,8 +5,10 @@ import requests
 import parse
 import os
 import shelve
+import datetime as dt
 
 ###################################################################
+# request-functions ###############################################
 
 def grab_linkedin(URL, Jobs):
 
@@ -31,11 +33,12 @@ def grab_linkedin(URL, Jobs):
         JobTitle = link.find('h3', class_="result-card__title job-result-card__title")
         Text = link.find(class_="job-result-card__snippet")
         JobLink = link.find('a', class_="result-card__full-card-link")
+        ScrapeDate = dt.date.today()
 
         JobTitle, OrgName, City, Text = parse.unpack_jobInfo(JobTitle, OrgName, City, Text)
 
         Jobs.append({'JobTitle': JobTitle, 'OrgName': OrgName, 'City': City,\
-            'Link': str(JobLink.get('href')), 'Text': Text, 'PreviouslyScraped': False})
+            'Link': str(JobLink.get('href')), 'Text': Text, 'PreviouslyScraped': False, 'ScrapeDate': ScrapeDate})
 
         JobCount += 1
     return(Jobs)
@@ -65,11 +68,12 @@ def grab_jobvector(URL, Jobs):
         JobTitle = link.find(class_="list-group-item-heading")
         Text = link.find(class_="job_teaser")
         JobLink = link.find('a', class_="list-group-item-resultlist")
+        ScrapeDate = dt.date.today()
 
         JobTitle, OrgName, City, Text = parse.unpack_jobInfo(JobTitle, OrgName, City, Text)
 
         Jobs.append({'JobTitle': JobTitle.strip(), 'OrgName': OrgName.strip(), 'City': City.strip(),\
-            'Link': ('https://www.jobvector.de' + str(JobLink.get('href'))), 'Text': Text, 'PreviouslyScraped': False})
+            'Link': ('https://www.jobvector.de' + str(JobLink.get('href'))), 'Text': Text, 'PreviouslyScraped': False}, 'ScrapeDate': ScrapeDate})
 
         JobCount += 1
     return(Jobs)
@@ -101,11 +105,13 @@ def grab_indeed(URL, Jobs):
         JobTitle = linkz[linkNum]
         Text = Summaries[linkNum]
         JobLink = linkz[linkNum]
+        ScrapeDate = dt.date.today()
 
         JobTitle, OrgName, City, Text = parse.unpack_jobInfo(JobTitle, OrgName, City, Text)
 
         Jobs.append({'JobTitle': JobTitle, 'OrgName': OrgName, 'City': City,\
-            'Link': ('https://indeed.com' + str(JobLink.get('href'))), 'Text': Text, 'PreviouslyScraped': False})
+            'Link': ('https://indeed.com' + str(JobLink.get('href'))), 'Text': Text, 'PreviouslyScraped': False, \
+                     'ScrapeDate': ScrapeDate}})
 
         JobCount += 1
 
@@ -119,7 +125,6 @@ def get_details(Jobs):
 
     for job in range(len(Jobs)):
         if Jobs[job].keys() and Jobs[job]['PreviouslyScraped']==False: # ónly get details for new jobs for speed
-            # print('job# ' + str(job))
             Link = Jobs[job]['Link']
             if 'indeed' in Link:
                 page = requests.get(Link)
@@ -139,7 +144,8 @@ def get_details(Jobs):
 
     return Jobs
 
-##############################################################################
+###################################################################
+# clean-up ########################################################
 
 def doubles(Jobs):
     nocount = 0
@@ -148,13 +154,8 @@ def doubles(Jobs):
             AddDoublesKeywords = []
             for AgainstJob in range(CheckJob + 1, len(Jobs)):
                 if Jobs[AgainstJob] != {}:
-                    # print(str(CheckJob) + ' vs ' + str(AgainstJob))
                     if Jobs[CheckJob]['JobTitle'] == Jobs[AgainstJob]['JobTitle'] and \
                        Jobs[CheckJob]['OrgName'] == Jobs[AgainstJob]['OrgName']:
-
-##                        print("    Double removed for:'" + \
-##                              Jobs[AgainstJob]['JobTitle'] + " - " + \
-##                              Jobs[AgainstJob]['OrgName'] + "'")
 
                         AddDoublesKeywords.append(Jobs[AgainstJob]['keywords'][0]) # get str out of list
 
@@ -193,18 +194,11 @@ def nogo(Jobs, NoNoWords):
             for nonoWord in NoNoWords:
                 n = nonoWord.lower()
                 if nonoWord in B:
-                    # print('CheckJob ' + str(CheckJob))
-                    # print(str(Jobs[CheckJob]))
-##                    print("    No-No word '" + nonoWord + "' detected in '" +  \
-##                          Jobs[CheckJob]['JobTitle'] + ',' + Jobs[CheckJob]['OrgName'])
-                    
+           
                     Jobs[CheckJob] = {}
                     nocount += 1
                     break # to prevent re-entering the loop if two words match
-##                else:
-##                    continue
-            
-        #
+
         
     print("    %d out of %d"%(nocount,len(Jobs)) + ' jobs marked as no-go entries')
     return(Jobs)
@@ -223,25 +217,18 @@ def nogo_company(Jobs, NoNoCompany):
 
             for nonoCompany in NoNoCompany:
                 if nonoCompany in C:
-                    # print('CheckJob ' + str(CheckJob))
-                    # print(str(Jobs[CheckJob]))
                     print("    No-No company '" + nonoCompany + "' detected in '" +  \
                           Jobs[CheckJob]['JobTitle'] + ',' + Jobs[CheckJob]['OrgName'])
                     
                     Jobs[CheckJob] = {}
                     nocount += 1
                     break # to prevent re-entering the loop if two words match
-##                else:
-##                    continue
-            
-        #
         
     print("    %d out of %d"%(nocount,len(Jobs)) + ' jobs marked as no-go company')
     return(Jobs)
 
-#################################################################################
-
-# sorting functions
+###################################################################
+# sorting-functions ###############################################
 
 def by_city(Jobs):
 
@@ -315,19 +302,21 @@ def by_company(Jobs):
 
     return(Jobs)
     
-#################################################################################
+###################################################################
+# modifying functions #############################################
 
-def compare2oldJobs(Jobs):
+def compare2oldJobs(Jobs, timeThreshold):
+
+    # Comparsed new jobs to specified list of previously scraped jobs and marks
+    # recurring entries accordingly. If, however, the date an old job was scraped
+    # exceeds a threshold (like 7 days), the job is deleted from the old job list
+    # and thus recognized as new. This is to allow for re-advertised jobs to show up as new.
 
     OldJobFilename = ''
     
     try:
         OldJobsList = open('.\\Results\\JobData\\PreviouslyScrapedJobs.txt')
         OldJobContent = OldJobsList.read()
-
-##        print(OldJobContent)
-##        import pprint
-##        pprint.pprint(Jobs)
         
         yesterday = OldJobContent.strip("yesterday = '")
 
@@ -343,26 +332,26 @@ def compare2oldJobs(Jobs):
                    Jobs[j]['JobTitle'] == oldJob['JobTitle'] and \
                     Jobs[j]['OrgName'] == oldJob['OrgName']:
 
-                    Jobs[j].update({'PreviouslyScraped': True})
+                    if 'ScrapeDate' in oldJob:
+                        # check date threshold
+                        PrevScrapeDate = oldJob['ScrapeDate']
+                        Delta = dt.date.today() - PrevScrapeDate 
+
+                        if  Delta <= timeThreshold:
+                            Jobs[j].update({'PreviouslyScraped': True})
+                        else:
+                            Jobs[j].update({'PreviouslyScraped': False}) # treated as new although in list
+                    else:
+                        Jobs[j].update({'PreviouslyScraped': True})
                     
-    ##            # create key if not existent (should have been created with False as default before though)
-    ##            elif 'PreviouslyScraped' not in Jobs[j].keys():
-    ##                Jobs[j].update({'PreviouslyScraped': False})
-    ##                print('prev scraped field does not exist')
-    ##
-    ##                print('Dong')
     except KeyError:
         print('key error')
         return(Jobs, OldJobFilename)
 
-    print('return')
-##    pprint.pprint(Jobs)
-
     return(Jobs, OldJobFilename)
     
-#################################################################################
-
-# saving functions
+###################################################################
+# saving ##########################################################
 
 def save_html(Jobs, date_time, OldJobFilename, NoNoWords, URLList):
 

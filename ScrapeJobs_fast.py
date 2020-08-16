@@ -16,7 +16,7 @@ def ScrapeJobs():
     # set up constants
     # change entries accordingly ###################################################
 
-    keywords = ['Gehirn', 'neuro', 'electroencepahlogram', 'imaging',
+    keywords = ['Gehirn', 'neuro', 'electroencephalogram', 'imaging',
                 'biology', 'biologist', 'life science',
                 'naturwissenschaften', 'bioinformatic',
                 'naturwissenschaftler', 'Matlab', 'cognitive', 'affective',
@@ -94,6 +94,10 @@ def ScrapeJobs():
     NoNoCompany = ['campusjäger']
 
     # options
+
+    # time distance to re-consider previously scraped jobs
+    previousThreshold = 14
+    
     # sorting (only one option ca be active) 
     sort_by_city = True
     sort_by_company = False
@@ -164,7 +168,7 @@ def ScrapeJobs():
     scrape.nogo_company(Jobs, NoNoCompany)
 
     # compare to previously scraped jobs
-    Jobs, OldJobFilename = scrape.compare2oldJobs(Jobs)
+    Jobs, OldJobFilename = scrape.compare2oldJobs(Jobs, previousThreshold)
 
     # count previously scraped jobs and optionally remove
     PrevScrCount = 0
