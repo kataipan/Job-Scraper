@@ -6,6 +6,7 @@ import parse
 import os
 import shelve
 import datetime as dt
+from numpy import random as rnd
 
 ###################################################################
 # request-functions ###############################################
@@ -333,18 +334,16 @@ def compare2oldJobs(Jobs, timeThreshold):
                     Jobs[j]['OrgName'] == oldJob['OrgName']:
 
                     if 'ScrapeDate' in oldJob:
-                        #print('field scrapeDate exists')
-                        #print(oldJob['ScrapeDate'])
                         # check date threshold
                         PrevScrapeDate = oldJob['ScrapeDate']
                         Delta = dt.date.today() - PrevScrapeDate 
 
                         if  Delta.days <= timeThreshold:
-                            #print('threshold not crossed')
                             Jobs[j].update({'PreviouslyScraped': True})
+                            Jobs[j].update({'ScrapeDate': PrevScrapeDate}) # we carry over the original scraping date, so that we can actually track and display the time since it was first scraped
                         else:
-                            #print('threshold crossed')
                             Jobs[j].update({'PreviouslyScraped': False}) # treated as new although in list
+                            Jobs[j].update({'ScrapeDate': PrevScrapeDate}) # we mark it as new, but keep the original scraping date, so we can differentiate between true nwe jobs and re-advertised ones
                     else:
                         Jobs[j].update({'PreviouslyScraped': True})
                     
@@ -441,22 +440,31 @@ def save_html(Jobs, date_time, OldJobFilename, NoNoWords, URLList):
                 ScrapeDate = Jobs[job]['ScrapeDate']
                 TimeDiff = dt.date.today() - ScrapeDate
 
-                # change color to indicate new and old jobs
+                if TimeDiff.days == 0:
+                    TimeDiffDays = 'new'
+                else:
+                    TimeDiffDays = str(TimeDiff.days) + ' days ago'
+
+                # change color to indicate new(or old enough to be new) and old jobs
                 if Jobs[job]['PreviouslyScraped'] == True:
                     divClass = 'myDiv1'
-                    TimeDiffDays = str(TimeDiff.days) + ' days ago'
-                    LineBreak = '<br><br>'
-                    
                 else:
                     divClass = 'myDiv2'
-                    TimeDiffDays = ''
-                    LineBreak = ''
 
-                HTML_element = '<div class="' + divClass + '"><a href="' + Jobs[job]['Link'] + \
+##                HTML_element = '<div class="' + divClass + '"><a href="' + Jobs[job]['Link'] + \
+##                                   '" title="' + Jobs[job]['Text'] + \
+##                                   '"><strong>' + Title + '<strong></a><br>' + Company + \
+##                                   '<br>' + City + LineBreak + '<span style="color: darkgray">' \
+##                                   + TimeDiffDays + '</span>' + \
+##                                    '<br><br><span style="color: darkgray">' \
+##                                    + Keywords + '</span></div>'
+
+                HTML_element = '<div class="' + divClass + '">' + \
+                               '<span style="color: darkgray">' \
+                                   + TimeDiffDays + '</span><br>' +'<a href="' + Jobs[job]['Link'] + \
                                    '" title="' + Jobs[job]['Text'] + \
                                    '"><strong>' + Title + '<strong></a><br>' + Company + \
-                                   '<br>' + City + LineBreak + '<span style="color: darkgray">' \
-                                   + TimeDiffDays + '</span>' + \
+                                   '<br>' + City + \
                                     '<br><br><span style="color: darkgray">' \
                                     + Keywords + '</span></div>'
     

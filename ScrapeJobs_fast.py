@@ -16,7 +16,7 @@ def ScrapeJobs():
     # set up constants
     # change entries accordingly ###################################################
 
-    keywords = ['data science']
+    keywords = ['data science', 'labor']
 
 ##    keywords = ['Gehirn', 'neuro', 'electroencephalogram', 'imaging',
 ##                'biology', 'biologist', 'life science',
@@ -60,7 +60,7 @@ def ScrapeJobs():
 ##              ['Frankfurt',             20]
                 ]
     
-    Sites = ['indeed']#, 'jobvector', 'linkedin'] # 'jobvector', 'linkedin', 'indeed']     # 'jobvector', 'linkedin', 'indeed'
+    Sites = ['indeed', 'jobvector', 'linkedin'] # 'jobvector', 'linkedin', 'indeed']     # 'jobvector', 'linkedin', 'indeed'
 
     # list of keywords to exclude jobs
     NoNoWords = [' ra ',
@@ -98,7 +98,7 @@ def ScrapeJobs():
     # options
 
     # time distance to re-consider previously scraped jobs
-    previousThreshold = 1
+    previousThreshold = 7
     
     # sorting (only one option ca be active) 
     sort_by_city = True
