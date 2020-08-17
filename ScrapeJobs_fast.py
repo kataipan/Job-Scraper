@@ -10,6 +10,7 @@ import scrape
 from datetime import datetime
 import make_URLList
 import parse
+import os
 
 def ScrapeJobs(): # main function
     
@@ -57,7 +58,7 @@ def ScrapeJobs(): # main function
 
     # scrape #############################################################################
 
-    # check for Results folders
+    # check for Results folder
     if not os.path.isdir('.\\Results'):
         print('Creating Results folder...')
         
