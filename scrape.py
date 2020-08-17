@@ -560,7 +560,6 @@ def split_by_keyword(Jobs, date_time, keywords):
                     ScrapeDate = Jobs[job]['ScrapeDate']
                     TimeDiff = dt.date.today() - ScrapeDate
                     TimeDiffDays = TimeDiff.days
-                    print(TimeDiffDays)
 
                     # change color to indicate new and old jobs
                     if Jobs[job]['PreviouslyScraped'] == True:

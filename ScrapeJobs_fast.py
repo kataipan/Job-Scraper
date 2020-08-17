@@ -11,105 +11,46 @@ from datetime import datetime
 import make_URLList
 import parse
 
-def ScrapeJobs():
+def ScrapeJobs(): # main function
     
     # set up constants
     # change entries accordingly ###################################################
 
-    keywords = ['data science', 'labor']
-
-##    keywords = ['Gehirn', 'neuro', 'electroencephalogram', 'imaging',
-##                'biology', 'biologist', 'life science',
-##                'naturwissenschaften', 'bioinformatic',
-##                'naturwissenschaftler', 'Matlab', 'cognitive', 'affective',
-##                'behaviour',
-##                'brain', 'data science', 'neuroscience',
-##                'neurowissenschaft', 'biomarker', 'jupyter', 'python',
-##                'pandas', 'numpy', 'scientific programmer',
-##                'digital signal processing', 'neuro', 'brain',
-##                'brain-computer', 'brain-machine']
-
-                # 'natural science'
+    keywords = ['data science',
+                'python',
+                'biology']
 
     # [city, search radius]
-    Cities = [
-##              ['Amsterdam',             20],
-##              ['Copenhagen',            20],
-####              ['Stockholm',             20],
-####              ['Lissabon',              20],
-##              ['Nürnberg',              20],
-##              ['Würzburg',              20],
-##              ['Leipzig',               10],
-##              ['Freiburg im Breisgau',  50],
-##              ['Basel',                 10],
-##              ['Karlsruhe',             10],
-##              ['Heidelberg',            20],
-##              ['Hamburg',               20],
-##              ['München',               20],
-##              ['Zürich',                20],
-##              ['Tübingen',              20],
-####              ['Göttingen',             20],
-##              ['Stuttgart',             20],
-##             ['Köln',                  20],
+    Cities = [['Leipzig',               10],
+              ['Hamburg',               20],
+              ['München',               20],
               ['Berlin',                20],
-##              ['Wien',                  20],
-##              ['Lausanne',              10],
-##              ['Bern',                  20],
-##              ['Strasbourg',            20],
-##              ['Mannheim',              10],
-##              ['Frankfurt',             20]
                 ]
     
     Sites = ['indeed', 'jobvector', 'linkedin'] # 'jobvector', 'linkedin', 'indeed']     # 'jobvector', 'linkedin', 'indeed'
 
     # list of keywords to exclude jobs
-    NoNoWords = [' ra ',
-                 'abschlussarbeit', 'account', 'administator', 'affairs',
-                     'appliation manager', 'application', 'arbeit', 'arzt',
-                     'ausbildung', 'aussendienst', 'auszubilden',
-                     'außendienst',
-                 'bachelor', 'berater', 'bundesweit', 'business',
-                     'buchhalter',
-                 'carosserie', 'chemiker', 'compliance', 'consultant',
-                     'consulting', 'customer', 'chemie', 'chemisch',
-                 'director',
-                 'enrolled', 'ergotherapeut',
-                 'fachangestellt', 'financial',
-                 'gmp',
-                 'head',
-                 'in vivo', 'ingenieurpraktikant', 'intern', 'internship',
-                 'kundenservice',
-                 'laborant', 'lead', 'liaison', 'lehrer',
-                 'marketing', 'mfa', 'microbiolog', 'mta',
-                 'nachhilfe',
-                 'physician', 'postdoc', 'praktikant',
-                     'praktikum', 'produktion', 'professor',
-                 'qc', 'qm', 'qualitaet', 'quality', 'quality assurance',
-                 'recruiter', 'referent', 'rzt',
-                 'sales', 'seminar', 'senior', 'student',
-                 'technician', 'techniker', 'thesis', 'therapeut', 'tutor',
-                 'unternehmensberatung',
-                 'vertrieb',
-                 'werkstudent',
-                 'zertifikat', 'zivildienst']
+    NoNoWords = ['sales', 'consulting']
 
-    NoNoCompany = ['campusjäger']
+    NoNoCompany = ['Nestle']
 
-    # options
+    # options ##################################################################
 
-    # time distance to re-consider previously scraped jobs
-    previousThreshold = 7
+    # time in days after which already scraped jobs
+    # are considered as new again (to catch re-advertisments etc.)
+    previousThreshold = 10
     
-    # sorting (only one option ca be active) 
+    # sorting (only one option can be active at a time)
+    # within eacht category, sorting is alphabetical
     sort_by_city = True
     sort_by_company = False
     sort_by_jobtitle = False
 
-    # generate additional separate result pages for keywords?
+    # generate additional result pages for each separate search term?
     split_by_keyword = True
 
-    # scrape detailed job descriptions?
-    scrape_job_details = False # SLOW!
+    # scrape detailed job descriptions? WARNING: SLOW!
+    scrape_job_details = False
 
     # remove previously found jobs from listing?
     remove_old_jobs = False
