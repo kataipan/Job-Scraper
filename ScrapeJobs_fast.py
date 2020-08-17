@@ -55,7 +55,17 @@ def ScrapeJobs(): # main function
     # remove previously found jobs from listing?
     remove_old_jobs = False
 
-    #########################################################################################################
+    # scrape #############################################################################
+
+    # check for Results folders
+    if not os.path.isdir('.\\Results'):
+        print('Creating Results folder...')
+        
+        os.mkdir('.\\Results')
+        os.mkdir('.\\Results\\JobData')
+        file = open('.\\Results\\JobData\\PreviouslyScrapedJobs.txt' ,'x')
+        file.write("yesterday = ''")
+        file.close()
 
     # check for option conflicts
     if int(sort_by_city) + int(sort_by_company) + int(sort_by_jobtitle) > 1:
