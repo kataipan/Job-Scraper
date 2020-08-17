@@ -440,22 +440,25 @@ def save_html(Jobs, date_time, OldJobFilename, NoNoWords, URLList):
                 # difference today - scrape date
                 ScrapeDate = Jobs[job]['ScrapeDate']
                 TimeDiff = dt.date.today() - ScrapeDate
-                TimeDiffDays = TimeDiff.days
-                print(TimeDiffDays)
 
                 # change color to indicate new and old jobs
                 if Jobs[job]['PreviouslyScraped'] == True:
                     divClass = 'myDiv1'
+                    TimeDiffDays = str(TimeDiff.days) + ' days ago'
+                    LineBreak = '<br><br>'
+                    
                 else:
                     divClass = 'myDiv2'
+                    TimeDiffDays = ''
+                    LineBreak = ''
 
                 HTML_element = '<div class="' + divClass + '"><a href="' + Jobs[job]['Link'] + \
                                    '" title="' + Jobs[job]['Text'] + \
                                    '"><strong>' + Title + '<strong></a><br>' + Company + \
-                                   '<br>' + City + '<br><br><span style="color: darkgray">' \
-                                   + str(TimeDiffDays) + ' days ago</span>' \
+                                   '<br>' + City + LineBreak + '<span style="color: darkgray">' \
+                                   + TimeDiffDays + '</span>' + \
                                     '<br><br><span style="color: darkgray">' \
-                                                   + Keywords + '</span></div>'
+                                    + Keywords + '</span></div>'
     
                 DisplayJobFile.write(HTML_element)
             except UnicodeEncodeError:
@@ -545,19 +548,32 @@ def split_by_keyword(Jobs, date_time, keywords):
                     k = set(Jobs[job]['keywords'])
                     Keywords = ', '.join(i for i in k)
 
+                    # difference today - scrape date
+                    ScrapeDate = Jobs[job]['ScrapeDate']
+                    TimeDiff = dt.date.today() - ScrapeDate
+                    TimeDiffDays = TimeDiff.days
+                    print(TimeDiffDays)
+
                     # change color to indicate new and old jobs
                     if Jobs[job]['PreviouslyScraped'] == True:
                         divClass = 'myDiv1'
+                        TimeDiffDays = str(TimeDiff.days) + ' days ago'
+                        LineBreak = '<br><br>'
+                    
                     else:
                         divClass = 'myDiv2'
+                        TimeDiffDays = ''
+                        LineBreak = ''
 
-                     HTML_element = '<div class="' + divClass + '"><a href="' + Jobs[job]['Link'] + \
+                    print(TimeDiff)
+
+                    HTML_element = '<div class="' + divClass + '"><a href="' + Jobs[job]['Link'] + \
                                    '" title="' + Jobs[job]['Text'] + \
                                    '"><strong>' + Title + '<strong></a><br>' + Company + \
-                                   '<br>' + City + '<br><br><span style="color: darkgray">' \
-                                   + str(TimeDiffDays) + ' days ago</span>' \
+                                   '<br>' + City + LineBreak + '<span style="color: darkgray">' \
+                                   + TimeDiffDays + '</span>' + \
                                     '<br><br><span style="color: darkgray">' \
-                                                   + Keywords + '</span></div>'
+                                    + Keywords + '</span></div>'
     
                     DisplayJobFile.write(HTML_element)
                 except UnicodeEncodeError:

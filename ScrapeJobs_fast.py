@@ -60,7 +60,7 @@ def ScrapeJobs():
 ##              ['Frankfurt',             20]
                 ]
     
-    Sites = ['indeed', 'jobvector', 'linkedin'] # 'jobvector', 'linkedin', 'indeed']     # 'jobvector', 'linkedin', 'indeed'
+    Sites = ['indeed']#, 'jobvector', 'linkedin'] # 'jobvector', 'linkedin', 'indeed']     # 'jobvector', 'linkedin', 'indeed'
 
     # list of keywords to exclude jobs
     NoNoWords = [' ra ',
