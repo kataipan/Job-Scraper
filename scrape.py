@@ -314,42 +314,47 @@ def compare2oldJobs(Jobs, timeThreshold):
     # and thus recognized as new. This is to allow for re-advertised jobs to show up as new.
 
     OldJobFilename = ''
-    
-    try:
-        OldJobsList = open('.\\Results\\JobData\\PreviouslyScrapedJobs.txt')
-        OldJobContent = OldJobsList.read()
+
+    # only perform if scraper has been used at least once, otherwise we get an error
+    if not os.path.isfile('.\\Results\\Jobdata\\PreviouslyScrapedJobs.txt'):
+        print('no old jobs available for comparison')
+
+    else:
+        try:
+            OldJobsList = open('.\\Results\\JobData\\PreviouslyScrapedJobs.txt')
+            OldJobContent = OldJobsList.read()
         
-        yesterday = OldJobContent.strip("yesterday = '")
+            yesterday = OldJobContent.strip("yesterday = '")
 
-        OldJobsFile = shelve.open('.\\Results\\JobData\\' + yesterday)
-        OldJobs = OldJobsFile['URLs']
+            OldJobsFile = shelve.open('.\\Results\\JobData\\' + yesterday)
+            OldJobs = OldJobsFile['URLs']
 
-        OldJobFilename = yesterday
+            OldJobFilename = yesterday
 
-        for oldJob in OldJobs:
-            for j in range(len(Jobs)):
-                # job has been scraped before
-                if Jobs[j] !={} and \
-                   Jobs[j]['JobTitle'] == oldJob['JobTitle'] and \
-                    Jobs[j]['OrgName'] == oldJob['OrgName']:
+            for oldJob in OldJobs:
+                for j in range(len(Jobs)):
+                    # job has been scraped before
+                    if Jobs[j] !={} and \
+                       Jobs[j]['JobTitle'] == oldJob['JobTitle'] and \
+                        Jobs[j]['OrgName'] == oldJob['OrgName']:
 
-                    if 'ScrapeDate' in oldJob:
-                        # check date threshold
-                        PrevScrapeDate = oldJob['ScrapeDate']
-                        Delta = dt.date.today() - PrevScrapeDate 
+                        if 'ScrapeDate' in oldJob:
+                            # check date threshold
+                            PrevScrapeDate = oldJob['ScrapeDate']
+                            Delta = dt.date.today() - PrevScrapeDate 
 
-                        if  Delta.days <= timeThreshold:
-                            Jobs[j].update({'PreviouslyScraped': True})
-                            Jobs[j].update({'ScrapeDate': PrevScrapeDate}) # we carry over the original scraping date, so that we can actually track and display the time since it was first scraped
+                            if  Delta.days <= timeThreshold:
+                                Jobs[j].update({'PreviouslyScraped': True})
+                                Jobs[j].update({'ScrapeDate': PrevScrapeDate}) # we carry over the original scraping date, so that we can actually track and display the time since it was first scraped
+                            else:
+                                Jobs[j].update({'PreviouslyScraped': False}) # treated as new although in list
+                                Jobs[j].update({'ScrapeDate': PrevScrapeDate}) # we mark it as new, but keep the original scraping date, so we can differentiate between true nwe jobs and re-advertised ones
                         else:
-                            Jobs[j].update({'PreviouslyScraped': False}) # treated as new although in list
-                            Jobs[j].update({'ScrapeDate': PrevScrapeDate}) # we mark it as new, but keep the original scraping date, so we can differentiate between true nwe jobs and re-advertised ones
-                    else:
-                        Jobs[j].update({'PreviouslyScraped': True})
+                            Jobs[j].update({'PreviouslyScraped': True})
                     
-    except KeyError:
-        print('key error')
-        return(Jobs, OldJobFilename)
+        except KeyError:
+            print('key error')
+            return(Jobs, OldJobFilename)
 
     return(Jobs, OldJobFilename)
     
