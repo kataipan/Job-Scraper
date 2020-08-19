@@ -180,11 +180,14 @@ def ScrapeJobs(): # main function
     print("    removing doubles and no-go's")
     print('    saving results...')
 
-    c = 0
+    all = 0
+    new = 0
     for i in range(len(Jobs)):
         if Jobs[i] != {}:
-            c += 1
-    print(str(c) + ' Jobs remaining')
+            all += 1
+            if not Jobs[i]['PreviouslyScraped']:
+                new += 1
+    print('    ' + str(all) + ' Jobs remaining (' + str(new) + ' new)')
 
     # create html file
     scrape.save_html(Jobs, date_time, OldJobFilename, NoNoWords, URLList)
