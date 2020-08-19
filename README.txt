@@ -15,7 +15,8 @@ used for requests and then parsed to form a html list of jobs with the form
 	
 	[search term/s]
 	
-Jobs are either highlighted green to indicate new jobs, or blue to indicate previously scraped jobs. If previously scraped jobs surpass a certain time 
+Jobs are either highlighted green to indicate new jobs, or blue to indicate 
+previously scraped jobs. If previously scraped jobs surpass a certain time 
 threshold, they will be indicated as green again. This happens to ensure that
 jobs that are re-advertised are caught as new rather than ignored.
 
@@ -43,10 +44,16 @@ HOW TO USE:---------------------------------------------------------------------
 	Any jobs that contain these terms will be deleted from the list as well.
 	
 	You have the option to pick between a fast variant, that just performs 
-	one request per URL, and a slower one, that requests the indivudal job 		listings for a detailed description as mouseover text in the results 			page. This second round of requests is done after doubles and exclusion 		words are removed, but it is still a lot slower!
+	one request per URL, and a slower one, that requests the indivudal job 		
+	listings for a detailed description as mouseover text in the results 			
+	page. This second round of requests is done after doubles and exclusion 		
+	words are removed, but it is still a lot slower!
 	
 	Lastly, if you have previously performed job searches, the data of these
-	scraping attempts will be saved in the Results folder. You can compare 	your current results with previous ones and either a) keep them in the 			list, where they will be marked blue, while new jobs are green or b) 	remove them from the result list.
+	scraping attempts will be saved in the Results folder. You can compare 	
+	your current results with previous ones and either a) keep them in the 			
+	list, where they will be marked blue, while new jobs are green or 
+	b) 	remove them from the result list.
 
 Options in detail:-------------------------------------------------------------------------
 
@@ -67,8 +74,8 @@ Exclusion keywords:
 Compare to old jobs:
 	By default, the entries in the resulting job list are of a green background.
 	If you wish to compare the results of the current search to a previous one, 
-	you can enter the filename of the comparison file into "PreviouslyScrapedJobs.txt" 
-	contained in the "Results\\JobData" folder.
+	you can enter the filename of the comparison file into 
+	"PreviouslyScrapedJobs.txt" contained in the "Results\\JobData" folder.
 
 		yesterday = 'name_of_file_you_want_to_compare_to'
 
