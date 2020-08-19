@@ -61,6 +61,7 @@ def ScrapeJobs(): # main function
     ############################################################################
     # scrape #############################################################################
 
+    firstScrape = False
     # check for Results folder
     if not os.path.isdir('.\\Results'):
         print('Creating Results folder...')
@@ -71,26 +72,29 @@ def ScrapeJobs(): # main function
         file.write("yesterday = ''")
         file.close()
 
+        firstScrape = True # do not allow for the follwoing file selection
+
     # pick file with old jobs for comparison
-    rootPath = os.path.abspath('.')
-    resultPath = rootPath + '\\Results\\JobData\\'
-    os.chdir(resultPath)
+    if not firstScrape:
+        rootPath = os.path.abspath('.')
+        resultPath = rootPath + '\\Results\\JobData\\'
+        os.chdir(resultPath)
 
-    root = tk.Tk()
-    root.withdraw()
+        root = tk.Tk()
+        root.withdraw()
 
-    file_path = filedialog.askopenfilename(title = "Select file", \
+        file_path = filedialog.askopenfilename(title = "Select file", \
                 filetypes = (("dat.files","*.dat"),))
 
-    fileName = file_path.split('JobData')
-    fileName = fileName[-1].split('.')
-    fileName = 'JobData' + fileName[0]
+        fileName = file_path.split('JobData')
+        fileName = fileName[-1].split('.')
+        fileName = 'JobData' + fileName[0]
 
-    file = open(resultPath + 'PreviouslyScrapedJobs.txt', 'w')
-    file.write("yesterday = '" + fileName + "'")
-    file.close()
+        file = open(resultPath + 'PreviouslyScrapedJobs.txt', 'w')
+        file.write("yesterday = '" + fileName + "'")
+        file.close()
 
-    os.chdir(rootPath)
+        os.chdir(rootPath)
 
     # check for option conflicts
     if int(sort_by_city) + int(sort_by_company) + int(sort_by_jobtitle) > 1:

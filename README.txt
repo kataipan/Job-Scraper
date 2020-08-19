@@ -1,26 +1,25 @@
-JobScraper - A set of python scripts that crawl job listing from a list of URLs 
-and saves the resuls to a .html file for more convenient browsing. 
-A naive web scraper custom built for my personal job hunt,
-currently set to work on LinkedIn, Jobvector.de and the German indeed.com site.
+JobScraper - A set of python scripts that crawl job listings from a list of URLs 
+and saves the results to a .html file for more convenient browsing. 
+A naive web scraper custom built for my personal job hunt, currently set to work 
+on LinkedIn, Jobvector.de and the German indeed.com site.
 
 BASE FUNCTIONALITY:--------------------------------------------------------------
 
-A list of URLs built from search terms, locations, radius and website is generated,
+A list of URLs is generated from search terms, locations, radius and websites,
 used for requests and then parsed to form a html list of jobs with the form
 
-	[original scrape date]
+	[new/ scrape date]
 	Job Name [links to job ad]
 	Company
 	City
 	
 	[search term/s]
 	
-Jobs are either highlighted green to indicate new jobs, or blue to indicate
-previously scraped jobs. If previously scraped jobs surpass a certain time 
+Jobs are either highlighted green to indicate new jobs, or blue to indicate previously scraped jobs. If previously scraped jobs surpass a certain time 
 threshold, they will be indicated as green again. This happens to ensure that
 jobs that are re-advertised are caught as new rather than ignored.
 
-CONTENTS:------------------------------------------------------------------------
+CONTENTS:-----------------------------------------------------------------------
 
 - ScrapeJobs_fast	The main script that manages high-level control and has
 			several options for the job-search (see next section).
@@ -37,23 +36,17 @@ HOW TO USE:---------------------------------------------------------------------
 	The main script is ScrapeJobs_fast.py.
 	
 	For a search to work, you need to enter keywords for the search (e.g.
-	"Data Scientist"), Cities to search and the search radius in a list, as well
-	asthe platform you want to search. 
+	"Data Scientist"), Cities to search and the search radius in a list, as
+	well as the platform you want to search. 
 	
-	Additionally, you can also enter a list of exclusion words. Any jobs that
-	contain these terms will be deleted from the list as well.
+	Additionally, you can also enter a list of exclusion words. 
+	Any jobs that contain these terms will be deleted from the list as well.
 	
 	You have the option to pick between a fast variant, that just performs 
-	one request per URL, and a slower one, that requests the indivudal job listings
-	for a detailed description as mouseover text in the results page. This
-	second round of requests is done after doubles and exclusion words are removed,
-	but it is still a lot slower!
+	one request per URL, and a slower one, that requests the indivudal job 		listings for a detailed description as mouseover text in the results 			page. This second round of requests is done after doubles and exclusion 		words are removed, but it is still a lot slower!
 	
 	Lastly, if you have previously performed job searches, the data of these
-	scraping attempts will be saved in the Results folder. You can compare your
-	current results with previous ones and either a) keep them in the list,
-	where they will be marked blue, while new jobs are green or b) remove
-	them from the result list.
+	scraping attempts will be saved in the Results folder. You can compare 	your current results with previous ones and either a) keep them in the 			list, where they will be marked blue, while new jobs are green or b) 	remove them from the result list.
 
 Options in detail:-------------------------------------------------------------------------
 
