@@ -10,7 +10,9 @@ import scrape
 from datetime import datetime
 import make_URLList
 import parse
-import os
+import os 
+import tkinter as tk
+from tkinter import filedialog
 
 def ScrapeJobs(): # main function
     
@@ -56,6 +58,7 @@ def ScrapeJobs(): # main function
     # remove previously found jobs from listing?
     remove_old_jobs = False
 
+    ############################################################################
     # scrape #############################################################################
 
     # check for Results folder
@@ -67,6 +70,27 @@ def ScrapeJobs(): # main function
         file = open('.\\Results\\JobData\\PreviouslyScrapedJobs.txt' ,'x')
         file.write("yesterday = ''")
         file.close()
+
+    # pick file with old jobs for comparison
+    rootPath = os.path.abspath('.')
+    resultPath = rootPath + '\\Results\\JobData\\'
+    os.chdir(resultPath)
+
+    root = tk.Tk()
+    root.withdraw()
+
+    file_path = filedialog.askopenfilename(title = "Select file", \
+                filetypes = (("dat.files","*.dat"),))
+
+    fileName = file_path.split('JobData')
+    fileName = fileName[-1].split('.')
+    fileName = 'JobData' + fileName[0]
+
+    file = open(resultPath + 'PreviouslyScrapedJobs.txt', 'w')
+    file.write("yesterday = '" + fileName + "'")
+    file.close()
+
+    os.chdir(rootPath)
 
     # check for option conflicts
     if int(sort_by_city) + int(sort_by_company) + int(sort_by_jobtitle) > 1:

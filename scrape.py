@@ -6,7 +6,7 @@ import parse
 import os
 import shelve
 import datetime as dt
-from numpy import random as rnd
+
 
 ###################################################################
 # request-functions ###############################################
@@ -456,14 +456,6 @@ def save_html(Jobs, date_time, OldJobFilename, NoNoWords, URLList):
                 else:
                     divClass = 'myDiv2'
 
-##                HTML_element = '<div class="' + divClass + '"><a href="' + Jobs[job]['Link'] + \
-##                                   '" title="' + Jobs[job]['Text'] + \
-##                                   '"><strong>' + Title + '<strong></a><br>' + Company + \
-##                                   '<br>' + City + LineBreak + '<span style="color: darkgray">' \
-##                                   + TimeDiffDays + '</span>' + \
-##                                    '<br><br><span style="color: darkgray">' \
-##                                    + Keywords + '</span></div>'
-
                 HTML_element = '<div class="' + divClass + '">' + \
                                '<span style="color: darkgray">' \
                                    + TimeDiffDays + '</span><br>' +'<a href="' + Jobs[job]['Link'] + \
@@ -489,8 +481,8 @@ def save_html(Jobs, date_time, OldJobFilename, NoNoWords, URLList):
 #################################################################################################
 
 def save_jobData(Jobs, date_time):
-    import os
-    import shelve
+    #import os
+    #import shelve
     from datetime import datetime
 
     d = shelve.open(os.path.abspath('.') + "\\Results\\JobData\\JobData_" \
@@ -570,20 +562,17 @@ def split_by_keyword(Jobs, date_time, keywords):
                     if Jobs[job]['PreviouslyScraped'] == True:
                         divClass = 'myDiv1'
                         TimeDiffDays = str(TimeDiff.days) + ' days ago'
-                        LineBreak = '<br><br>'
                     
                     else:
                         divClass = 'myDiv2'
                         TimeDiffDays = ''
-                        LineBreak = ''
 
-                    print(TimeDiff)
-
-                    HTML_element = '<div class="' + divClass + '"><a href="' + Jobs[job]['Link'] + \
+                    HTML_element = '<div class="' + divClass + '">' + \
+                               '<span style="color: darkgray">' \
+                                   + TimeDiffDays + '</span><br>' +'<a href="' + Jobs[job]['Link'] + \
                                    '" title="' + Jobs[job]['Text'] + \
                                    '"><strong>' + Title + '<strong></a><br>' + Company + \
-                                   '<br>' + City + LineBreak + '<span style="color: darkgray">' \
-                                   + TimeDiffDays + '</span>' + \
+                                   '<br>' + City + \
                                     '<br><br><span style="color: darkgray">' \
                                     + Keywords + '</span></div>'
     
